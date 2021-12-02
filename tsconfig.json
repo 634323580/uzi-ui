@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+        "*": ["types/*"]
+    },
     "noImplicitAny": true,
     "target": "esnext",
     "useDefineForClassFields": true,

@@ -1,5 +1,6 @@
 <template>
   <container
+  :initPanelData="initPanelData"
   >
     <p v-for="(item, index) in 100" :key="index">{{ index }}</p>
   </container>

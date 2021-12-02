@@ -21,6 +21,7 @@
               <div class="label">{{ item.label }}</div>
               <component
                 :is="item.type"
+                @change="handleChange"
                 v-bind="item.attrs"
                 v-model="panelData[field]"
                 class="drawer-component"
@@ -50,7 +51,9 @@ import {
   Setting as SettingIcon,
   Close as CloseIcon,
 } from "@element-plus/icons";
+import storage from 'good-storage'
 import store, { PanelData } from "../store";
+import { Console } from "console";
 
 interface Setting {
   [propName: string]: {
@@ -69,7 +72,7 @@ const props = defineProps<{
 
 const show = ref(false);
 
-let panelData = computed(() => store.state.panelData);
+let panelData = computed(() => JSON.parse(JSON.stringify(store.state.panelData)));
 const setting = ref<Setting>({
   sidebarLogo: {
     type: "el-switch",
@@ -116,11 +119,16 @@ function init() {
     store.setPanelDataAction({
       ...panelData.value,
       ...initPanelData,
+      ...storage.get('__panelData__', {})
     });
   }
   if (initPanelSetting) {
     setting.value = initPanelSetting;
   }
+}
+
+function handleChange() {
+  store.setPanelDataAction(panelData.value);
 }
 </script>
 
