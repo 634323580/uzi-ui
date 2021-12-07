@@ -1,6 +1,6 @@
 import { App } from 'vue'
 
-import container from './container/index.vue'
+import container from './container/components.vue'
 
 
 // 所有组件列表

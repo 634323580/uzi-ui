@@ -1,24 +1,32 @@
 import { reactive } from 'vue'
 import storage from 'good-storage'
-
+import { SettingData } from './types/right-panel'
 export interface State {
-  panelData: PanelData
-}
-
-export interface PanelData {
-  [key: string]: any
+  panelData: SettingData
 }
 
 const store = {
   debug: true,
   state: reactive<State>({
-    panelData: storage.get('__panelData__', {
-      fixedHeader: true
-    })
+    panelData: {
+      sidebarLogo: true,
+      contentWidth: "fullWidth",
+      appBarType: 'fixed',
+      footerType: 'static',
+      menuLayout: 'vertical',
+      menuCollapsed: false,
+      menuHidden: false,
+      ...storage.get('__panelData__', {})
+    }
   }),
-  setPanelDataAction(newPanelData: PanelData) {
+  setPanelDataAction(newPanelData: SettingData, cacheKey?: string, cacheValue?: any) {
+    console.log(1)
+    if(cacheKey) {
+      let cacheData = storage.get<{[propName: string]: any}>('__panelData__', {})
+      cacheData[cacheKey] = cacheValue
+      storage.set('__panelData__', cacheData);
+    }
     this.state.panelData = newPanelData
-    storage.set('__panelData__', newPanelData)
   }
 }
 

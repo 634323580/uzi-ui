@@ -8,36 +8,42 @@
           <close-icon v-else />
         </el-icon>
       </div>
-
-      <div class="rightPanel-items">
-        <div class="drawer-container">
-          <div>
-            <h3 class="drawer-title">Page style setting</h3>
-            <div
-              class="drawer-item"
-              v-for="(item, field) in setting"
-              :key="field"
+      <div class="drawer-container">
+        <div
+          class="drawer-section"
+          v-for="section in setting"
+          :key="section.title"
+        >
+          <div class="drawer-title">
+            {{ section.title }}
+          </div>
+          <div
+            class="drawer-item"
+            v-for="(item, field) in section.desc"
+            :key="field"
+          >
+            <div class="label">{{ item.label }}</div>
+            <component
+              :is="item.type"
+              @change="handleChange($event, field)"
+              v-bind="item.attrs"
+              v-model="panelData[field]"
+              class="drawer-component"
             >
-              <div class="label">{{ item.label }}</div>
-              <component
-                :is="item.type"
-                @change="handleChange"
-                v-bind="item.attrs"
-                v-model="panelData[field]"
-                class="drawer-component"
-              >
-                <template v-if="item.options" v-slot:default>
-                  <component
-                    :is="item.subComponent"
-                    v-for="option in item.options"
-                    :key="option.value"
-                    :label="option.text"
-                    :value="option.value"
-                  >
-                  </component>
-                </template>
-              </component>
-            </div>
+              <template v-if="item.options && item.subComponent" v-slot:default>
+                <component
+                  :is="item.subComponent"
+                  v-for="option in item.options"
+                  :key="option.value"
+                  :label="
+                    item.type === 'el-radio-group' ? option.value : option.text
+                  "
+                  :value="option.value"
+                >
+                  {{ option.text }}
+                </component>
+              </template>
+            </component>
           </div>
         </div>
       </div>
@@ -51,61 +57,140 @@ import {
   Setting as SettingIcon,
   Close as CloseIcon,
 } from "@element-plus/icons";
-import storage from 'good-storage'
-import store, { PanelData } from "../store";
-import { Console } from "console";
-
-interface Setting {
-  [propName: string]: {
-    type: string;
-    label: string;
-    options?: { text: string; value: any }[];
-    subComponent?: string;
-    attrs?: any;
-  };
-}
+import { flattenDeep } from 'lodash-es'
+import storage from "good-storage";
+import store from "../store";
+import { Setting, SettingData } from '../types/right-panel'
 
 const props = defineProps<{
-  initPanelData?: PanelData;
-  initPanelSetting?: Setting;
+  initPanelData?: SettingData;
+  initPanelSetting?: Setting[];
 }>();
 
 const show = ref(false);
 
-let panelData = computed(() => JSON.parse(JSON.stringify(store.state.panelData)));
-const setting = ref<Setting>({
-  sidebarLogo: {
-    type: "el-switch",
-    label: "Sidebar Logo",
-  },
-  fixedHeader: {
-    type: "el-switch",
-    label: "Fixed Header",
-  },
-  fixedFooter: {
-    type: "el-switch",
-    label: "Fixed footer",
-  },
-  // theme: {
-  //   type: "el-select",
-  //   label: "theme color",
-  //   subComponent: "el-option",
-  //   options: [
-  //     {
-  //       text: "214",
-  //       value: 214,
-  //     },
-  //   ],
-  //   attrs: {
-  //     size: 'mini'
-  //   }
-  // },
+const panelData = computed<SettingData>(() => {
+  return { ...store.state.panelData }
 });
+
+const setting = ref<Setting[]>([
+  {
+    title: "Page style setting",
+    desc: {
+      sidebarLogo: {
+        type: "el-switch",
+        label: "Sidebar Logo",
+      },
+    },
+  },
+  {
+    title: "Layout",
+    desc: {
+      contentWidth: {
+        type: "el-radio-group",
+        label: "Content Width",
+        subComponent: "el-radio",
+        options: [
+          {
+            text: "Full Width",
+            value: "fullWidth",
+          },
+          {
+            text: "Boxed",
+            value: "boxed",
+          },
+        ],
+        attrs: {
+          style: {
+            width: "100%",
+          },
+        },
+      },
+      appBarType: {
+        type: "el-radio-group",
+        label: "AppBar Type",
+        subComponent: "el-radio",
+        options: [
+          {
+            text: "Fixed",
+            value: "fixed",
+          },
+          {
+            text: "Static",
+            value: "static",
+          },
+        ],
+        attrs: {
+          style: {
+            width: "100%",
+          },
+        },
+      },
+      footerType: {
+        type: "el-radio-group",
+        label: "Footer Type",
+        subComponent: "el-radio",
+        options: [
+          {
+            text: "Fixed",
+            value: "fixed",
+          },
+          {
+            text: "Static",
+            value: "static",
+          },
+          {
+            text: "Hidden",
+            value: "hidden",
+          },
+        ],
+        attrs: {
+          style: {
+            width: "100%",
+          },
+        },
+      },
+    },
+  },
+  {
+    title: "MENU",
+    desc: {
+      menuLayout: {
+        type: "el-radio-group",
+        label: "Menu Layout",
+        subComponent: "el-radio",
+        options: [
+          {
+            text: "Vertical",
+            value: "vertical",
+          },
+          {
+            text: "Horizontal",
+            value: "horizontal",
+          },
+        ],
+        attrs: {
+          style: {
+            width: "100%",
+          },
+        },
+      },
+      menuCollapsed: {
+        type: "el-switch",
+        label: "Menu Collapsed",
+      },
+      menuHidden: {
+        type: "el-switch",
+        label: "Menu Hidden",
+      },
+    },
+  },
+]);
 
 init();
 
 watchEffect(() => {
-  let body: HTMLBodyElement | null = document.querySelector("body");
+  let body = document.querySelector("body");
   if (show.value) {
     body?.classList.add("showRightPanel");
   } else {
@@ -119,16 +204,33 @@ function init() {
     store.setPanelDataAction({
       ...panelData.value,
       ...initPanelData,
-      ...storage.get('__panelData__', {})
+      ...storage.get("__panelData__", {}),
     });
   }
   if (initPanelSetting) {
     setting.value = initPanelSetting;
   }
+  // 删除不存在选项配置中的缓存
+  const clonePanelData = { ...store.state.panelData }
+  const initPanelKeys: string[] = flattenDeep(setting.value.map(section => {
+    return Object.keys(section.desc)
+  }))
+  Object.keys(clonePanelData).forEach(panelDataKey => {
+    if(!initPanelKeys.includes(panelDataKey)) {
+      delete clonePanelData[panelDataKey]
+    }
+  })
+  store.setPanelDataAction({
+    // ...store.state.panelData,
+    ...initPanelData,
+    ...clonePanelData
+  })
+  storage.set("__panelData__", clonePanelData)
 }
 
-function handleChange() {
-  store.setPanelDataAction(panelData.value);
+function handleChange(value: any, field: string) {
+  console.log(value, field)
+  store.setPanelDataAction(panelData.value, field, value);
 }
 </script>
 
@@ -148,13 +250,13 @@ function handleChange() {
 
 .rightPanel {
   width: 100%;
-  max-width: 260px;
+  max-width: 400px;
   height: 100vh;
   position: fixed;
   top: 0;
   right: 0;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transition: transform 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
   transform: translate(100%);
   background: #fff;
   z-index: 1000;
@@ -193,25 +295,39 @@ function handleChange() {
   }
 }
 .drawer-container {
-  padding: 24px;
+  padding: 24px 0;
   font-size: 14px;
   line-height: 1.5;
   word-wrap: break-word;
-
+  color: rgba(94, 86, 105, 0.87);
+  height: 100%;
+  overflow-y: auto;
+  .drawer-section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e3e762;
+    padding: 0 24px;
+  }
   .drawer-title {
-    margin-bottom: 12px;
-    color: rgba(0, 0, 0, 0.85);
-    font-size: 14px;
-    line-height: 22px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: rgba(94, 86, 105, 0.38);
+    font-weight: bold;
   }
 
   .drawer-item {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     justify-content: space-between;
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 14px;
-    padding: 12px 0;
+    margin-bottom: 20px;
+    .label {
+      font-size: 14px;
+    }
+    :deep(.el-radio) {
+      height: 24px;
+      .el-radio__label {
+        font-weight: normal;
+      }
+    }
   }
 }
 </style>
