@@ -1,35 +1,36 @@
 <template>
   <container
     ref="containerRef"
-    asideWidth="200px"
-    asideCollapsedWidth="60px"
-    :initPanelData="initPanelData"
-    :initPanelSetting="initPanelSetting"
+    :asideWidth="300"
   >
     {{ panelData }}
     <p v-for="(item, index) in 100" :key="index">{{ index }}</p>
   </container>
+  <right-panel :button="true" :initPanelData="initPanelData" :initPanelSetting="initPanelSetting"/>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-
-const initPanelSetting = [
+import { Setting } from '../dist/packages/components/right-panel'
+const initPanelSetting: Setting[] = [
   {
     title: "自定义",
     desc: {
       sidebarLogo: {
         type: "el-switch",
-        label: "Fixed Header",
+        label: "sidebarLogo",
       },
-
+      menuCollapsed: {
+        type: "el-switch",
+        label: "Menu Collapsed",
+      }
     },
   },
 ];
 const initPanelData = ref({
   fixedHeader: true,
   sidebarLogo: true,
-  menuCollapsed: false,
+  menuCollapsed: true,
   menuHidden: false
 });
 const containerRef = ref<any>(null);

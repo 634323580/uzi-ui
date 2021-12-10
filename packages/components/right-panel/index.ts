@@ -1,3 +1,4 @@
+import RightPanel from "./right-panel.vue";
 export interface SettingDesc {
   type: string;
   label: string;
@@ -16,7 +17,7 @@ export interface Setting {
     menuLayout?: SettingDesc;
     menuCollapsed?: SettingDesc;
     menuHidden?: SettingDesc;
-    [propName: string]: SettingDesc;
+    [propName: string]: any;
   };
 }
 
@@ -30,3 +31,5 @@ export interface SettingData {
   menuHidden?: boolean;
   [propName: string]: any;
 }
+
+export default RightPanel

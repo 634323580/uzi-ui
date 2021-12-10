@@ -5,9 +5,14 @@ import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, 'packages')
+    }
+  },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'lib/index.ts'),
+      entry: path.resolve(__dirname, 'packages/index.ts'),
       name: 'container',
       fileName: (format) => `index.${format}.js`
     },

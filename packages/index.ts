@@ -1,10 +1,11 @@
 import { App } from 'vue'
 
-import container from './container/components.vue'
+import container from '@/components/container'
+import RightPanel from '@/components/right-panel'
 
 
 // 所有组件列表
-const components = [ container ]
+const components = [ container, RightPanel ]
 
 // 定义 install 方法， App 作为参数
 const install = (app: App) => {
@@ -16,7 +17,8 @@ const install = (app: App) => {
 }
 
 export {
-  container
+  container,
+  RightPanel
 }
 
 export default {

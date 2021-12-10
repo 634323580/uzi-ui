@@ -1,7 +1,15 @@
 <template>
   <div class="container">
     <!-- aside -->
-    <div v-if="!panelData.menuHidden" :style="asideStyle" class="container__aside">Aside</div>
+    <transition name="slide-left">
+      <div
+        v-if="!panelData.menuHidden"
+        :style="asideStyle"
+        class="container__aside"
+      >
+        <SlideBar />
+      </div>
+    </transition>
     <!-- mainLayout -->
     <div :style="mainLayoutStyle" class="container__main">
       <!-- header -->
@@ -27,7 +35,6 @@
       </div>
     </div>
   </div>
-  <right-panel v-bind="$attrs" />
 </template>
 
 <script lang="ts">
@@ -39,16 +46,16 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 import { computed } from "vue";
-import rightPanel from "./components/right-panel.vue";
+import SlideBar from './components/sidebar/sidebar.vue'
 import store from "./store";
 
 interface Props {
-  asideWidth?: string;
-  asideCollapsedWidth?: string;
+  asideWidth?: number;
+  asideCollapsedWidth?: number;
 }
 const props = withDefaults(defineProps<Props>(), {
-  asideWidth: "200px",
-  asideCollapsedWidth: "60px",
+  asideWidth: 200,
+  asideCollapsedWidth: 60,
 });
 
 // 设置面板数据
@@ -58,7 +65,7 @@ const asideStyle = computed(() => {
   const { menuCollapsed } = panelData.value;
   const { asideWidth, asideCollapsedWidth } = props;
   return {
-    width: menuCollapsed ? asideCollapsedWidth : asideWidth
+    width: (menuCollapsed ? asideCollapsedWidth : asideWidth) + 'px',
   };
 });
 // 主要内容外框样式
@@ -68,9 +75,9 @@ const mainLayoutStyle = computed(() => {
   let marginLeft = "";
   if (!menuHidden) {
     if (menuCollapsed) {
-      marginLeft = asideCollapsedWidth;
+      marginLeft = asideCollapsedWidth + 'px';
     } else {
-      marginLeft = asideWidth;
+      marginLeft = asideWidth + 'px';
     }
   }
   return {
@@ -97,8 +104,7 @@ defineExpose({
   z-index: 999;
   width: 200px;
   background-color: #d3dce6;
-  color: var(--el-text-color-primary);
-  transition: 0.3s ease;
+  transition: width 0.3s ease;
 }
 .container__main {
   display: flex;
@@ -143,12 +149,17 @@ defineExpose({
 }
 
 .slide-bottom-enter-active,
-.slide-bottom-leave-active {
+.slide-left-enter-active{
   transition: 0.3s ease;
 }
 
 .slide-bottom-enter-from,
 .slide-bottom-leave-to {
   transform: translate3d(0, 100%, 0);
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+  transform: translate3d(-100%, 0, 0);
 }
 </style>

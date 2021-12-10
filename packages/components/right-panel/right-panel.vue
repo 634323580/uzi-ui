@@ -1,76 +1,94 @@
 <template>
-  <div class="rightPanel-container" :class="{ show: show }">
-    <div class="rightPanel-background" @click="show = !show" />
-    <div class="rightPanel">
-      <div class="handle-button" @click="show = !show">
-        <el-icon class="icon" :size="24">
-          <setting-icon v-if="!show" />
-          <close-icon v-else />
-        </el-icon>
-      </div>
-      <div class="drawer-container">
-        <div
-          class="drawer-section"
-          v-for="section in setting"
-          :key="section.title"
-        >
-          <div class="drawer-title">
-            {{ section.title }}
-          </div>
+  <teleport to="body">
+    <div class="rightPanel-container" v-if="button" :class="{ show: show }">
+      <div class="rightPanel-background" @click="show = !show" />
+      <div class="rightPanel">
+        <div class="handle-button" v-if="button" @click="show = !show">
+          <el-icon class="icon" :size="24">
+            <setting-icon v-if="!show" />
+            <close-icon v-else />
+          </el-icon>
+        </div>
+        <div class="drawer-container">
           <div
-            class="drawer-item"
-            v-for="(item, field) in section.desc"
-            :key="field"
+            class="drawer-section"
+            v-for="section in setting"
+            :key="section.title"
           >
-            <div class="label">{{ item.label }}</div>
-            <component
-              :is="item.type"
-              @change="handleChange($event, field)"
-              v-bind="item.attrs"
-              v-model="panelData[field]"
-              class="drawer-component"
+            <div class="drawer-title">
+              {{ section.title }}
+            </div>
+            <div
+              class="drawer-item"
+              v-for="(item, field) in section.desc"
+              :key="field"
             >
-              <template v-if="item.options && item.subComponent" v-slot:default>
-                <component
-                  :is="item.subComponent"
-                  v-for="option in item.options"
-                  :key="option.value"
-                  :label="
-                    item.type === 'el-radio-group' ? option.value : option.text
-                  "
-                  :value="option.value"
+              <div class="label">{{ item.label }}</div>
+              <component
+                :is="item.type"
+                @change="handleChange($event, field as string)"
+                v-bind="item.attrs"
+                v-model="panelData[field]"
+                class="drawer-component"
+              >
+                <template
+                  v-if="item.options && item.subComponent"
+                  v-slot:default
                 >
-                  {{ option.text }}
-                </component>
-              </template>
-            </component>
+                  <component
+                    :is="item.subComponent"
+                    v-for="option in item.options"
+                    :key="option.value"
+                    :label="
+                      item.type === 'el-radio-group'
+                        ? option.value
+                        : option.text
+                    "
+                    :value="option.value"
+                  >
+                    {{ option.text }}
+                  </component>
+                </template>
+              </component>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </teleport>
 </template>
+<script lang="ts">
+import { defineComponent } from "vue";
 
+export default defineComponent({
+  name: "right-panel",
+});
+</script>
 <script setup lang="ts">
 import { ref, watchEffect, computed } from "vue";
 import {
   Setting as SettingIcon,
   Close as CloseIcon,
 } from "@element-plus/icons";
-import { flattenDeep } from 'lodash-es'
+import { flattenDeep } from "lodash-es";
 import storage from "good-storage";
-import store from "../store";
-import { Setting, SettingData } from '../types/right-panel'
+import store from "@/components/container/store";
+import { Setting, SettingData } from "./index";
 
-const props = defineProps<{
+interface Props {
+  button?: boolean;
   initPanelData?: SettingData;
   initPanelSetting?: Setting[];
-}>();
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  button: true,
+});
 
 const show = ref(false);
 
 const panelData = computed<SettingData>(() => {
-  return { ...store.state.panelData }
+  return { ...store.state.panelData };
 });
 
 const setting = ref<Setting[]>([
@@ -198,38 +216,52 @@ watchEffect(() => {
   }
 });
 
+// window.addEventListener('click', (e: Event) => {
+//   console.log((e.target as HTMLElement).closest('.rightPanel-container'))
+// })
+
 function init() {
-  const { initPanelData, initPanelSetting } = props;
-  if (initPanelData) {
-    store.setPanelDataAction({
-      ...panelData.value,
-      ...initPanelData,
-      ...storage.get("__panelData__", {}),
-    });
-  }
-  if (initPanelSetting) {
+  const { initPanelData = {}, initPanelSetting = [] } = props;
+
+  // 声明默认设置
+  let panelData: SettingData = {
+    sidebarLogo: true,
+    contentWidth: "fullWidth",
+    appBarType: "fixed",
+    footerType: "static",
+    menuLayout: "vertical",
+    menuCollapsed: false,
+    menuHidden: false,
+    ...initPanelData,
+  };
+
+  // 获取本地缓存设置
+  const catchPanelData = storage.get<SettingData>("__panelData__", {});
+
+  if (initPanelSetting.length) {
     setting.value = initPanelSetting;
   }
   // 删除不存在选项配置中的缓存
-  const clonePanelData = { ...store.state.panelData }
-  const initPanelKeys: string[] = flattenDeep(setting.value.map(section => {
-    return Object.keys(section.desc)
-  }))
-  Object.keys(clonePanelData).forEach(panelDataKey => {
-    if(!initPanelKeys.includes(panelDataKey)) {
-      delete clonePanelData[panelDataKey]
+  const initPanelKeys: string[] = flattenDeep(
+    setting.value.map((section) => {
+      return Object.keys(section.desc);
+    })
+  );
+  Object.keys(catchPanelData).forEach((panelDataKey) => {
+    if (!initPanelKeys.includes(panelDataKey)) {
+      delete catchPanelData[panelDataKey];
     }
-  })
+  });
+  // 缓存设置覆盖默认设置
   store.setPanelDataAction({
-    // ...store.state.panelData,
-    ...initPanelData,
-    ...clonePanelData
-  })
-  storage.set("__panelData__", clonePanelData)
+    ...panelData,
+    ...catchPanelData,
+  });
+  storage.set("__panelData__", catchPanelData);
 }
 
 function handleChange(value: any, field: string) {
-  console.log(value, field)
+  console.log(value, field);
   store.setPanelDataAction(panelData.value, field, value);
 }
 </script>
@@ -280,7 +312,7 @@ function handleChange(value: any, field: string) {
   height: 48px;
   position: absolute;
   left: -48px;
-  top: 260px;
+  top: 250px;
   text-align: center;
   border-radius: 6px 0 0 6px !important;
   z-index: 0;
