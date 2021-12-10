@@ -1,11 +1,11 @@
 import { App } from 'vue'
 
-import container from '@/components/container'
+import Container from '@/components/container'
 import RightPanel from '@/components/right-panel'
 
 
 // 所有组件列表
-const components = [ container, RightPanel ]
+const components = [ Container, RightPanel ]
 
 // 定义 install 方法， App 作为参数
 const install = (app: App) => {
@@ -16,8 +16,10 @@ const install = (app: App) => {
   })
 }
 
+export const SIDEBAR_STYLE_KEY = "__sidebarStyle";
+
 export {
-  container,
+  Container,
   RightPanel
 }
 

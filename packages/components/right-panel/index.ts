@@ -23,10 +23,10 @@ export interface Setting {
 
 export interface SettingData {
   sidebarLogo?: boolean;
-  contentWidth?: string;
-  appBarType?: string;
-  footerType?: string;
-  menuLayout?: string;
+  contentWidth?: 'fullWidth' | 'boxed';
+  appBarType?: 'fixed' | 'static';
+  footerType?: 'fixed' | 'static' | 'hidden';
+  menuLayout?: 'vertical' | 'horizontal';
   menuCollapsed?: any;
   menuHidden?: boolean;
   [propName: string]: any;

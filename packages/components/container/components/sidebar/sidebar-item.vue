@@ -25,8 +25,8 @@
       <el-sub-menu :index="resolvePath(item.path, isRoot)" popper-append-to-body>
         <template #title v-if="item.meta">
           <el-icon><SettingIcon /></el-icon>
-          <!-- <span>{{ item.meta.title }}</span> -->
-          <span>{{resolvePath(item.path, isRoot)}}</span>
+          <!-- <span class="title">{{ item.meta.title }}</span> -->
+          <span class="title">{{resolvePath(item.path, isRoot)}}</span>
         </template>
         <sidebar-item
           v-for="child in item.children"
@@ -50,19 +50,19 @@ import {
   Setting as SettingIcon,
   Close as CloseIcon,
 } from "@element-plus/icons";
-import { Sidebar } from "./index";
+import { SidebarItemProps } from "./index";
 
 const props = defineProps<{
-  item: Sidebar;
+  item: SidebarItemProps;
   basePath: string;
   isRoot?: boolean
 }>();
 
-let onlyOneChild = ref<Sidebar>();
+let onlyOneChild = ref<SidebarItemProps>();
 
 function hasOneShowingChild(
-  children: Sidebar[] = [],
-  parent: Sidebar
+  children: SidebarItemProps[] = [],
+  parent: SidebarItemProps
 ) {
   // 所有显示的子节点
   const showingChildren = children.filter((item) => {

@@ -3,18 +3,23 @@
     <!-- aside -->
     <transition name="slide-left">
       <div
-        v-if="!panelData.menuHidden"
+        v-if="!panelData.menuHidden && panelData.menuLayout !== 'horizontal'"
         :style="asideStyle"
         class="container__aside"
       >
-        <SlideBar />
+        <Sidebar />
       </div>
     </transition>
     <!-- mainLayout -->
     <div :style="mainLayoutStyle" class="container__main">
       <!-- header -->
       <div :class="panelData.appBarType" class="container__header">
-        <div :class="panelData.contentWidth" style="height: 60px">header</div>
+        <div :class="panelData.contentWidth">
+            <!-- v-if="!panelData.menuHidden && panelData.menuLayout === 'horizontal'"  -->
+          <Sidebar 
+            mode="horizontal"
+          />
+        </div>
       </div>
       <div class="container__content">
         <div class="content-width" :class="panelData.contentWidth">
@@ -46,7 +51,7 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 import { computed } from "vue";
-import SlideBar from './components/sidebar/sidebar.vue'
+import Sidebar from './components/sidebar/sidebar.vue'
 import store from "./store";
 
 interface Props {
@@ -70,10 +75,10 @@ const asideStyle = computed(() => {
 });
 // 主要内容外框样式
 const mainLayoutStyle = computed(() => {
-  const { menuCollapsed, menuHidden } = panelData.value;
+  const { menuCollapsed, menuHidden, menuLayout } = panelData.value;
   const { asideWidth, asideCollapsedWidth } = props;
   let marginLeft = "";
-  if (!menuHidden) {
+  if (!menuHidden && menuLayout !== 'horizontal') {
     if (menuCollapsed) {
       marginLeft = asideCollapsedWidth + 'px';
     } else {
@@ -103,7 +108,6 @@ defineExpose({
   bottom: 0;
   z-index: 999;
   width: 200px;
-  background-color: #d3dce6;
   transition: width 0.3s ease;
 }
 .container__main {

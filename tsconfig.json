@@ -2,8 +2,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-        "*": ["types/*"],
-        "@/*": ["packages/*"]
+      "*": ["types/*"],
+      "@/*": ["packages/*"]
     },
     "noImplicitAny": true,
     "target": "esnext",
