@@ -61,29 +61,35 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "right-panel",
+  name: "setting-panel",
 });
 </script>
 <script setup lang="ts">
-import { ref, watchEffect, computed } from "vue";
+import { ref, watchEffect, watch, computed } from "vue";
 import {
   Setting as SettingIcon,
   Close as CloseIcon,
 } from "@element-plus/icons";
 import { flattenDeep } from "lodash-es";
 import storage from "good-storage";
-import store from "@/components/container/store";
-import { Setting, SettingData } from "./index";
+import store from "@/components/setting-panel/store";
+import {
+  defaultSetting,
+  CATCH_KEY,
+  Setting,
+  SettingData,
+} from "./setting-panel";
 
 interface Props {
   button?: boolean;
-  initPanelData?: SettingData;
-  initPanelSetting?: Setting[];
+  modelValue?: SettingData;
+  customSetting?: Setting[];
 }
-
 const props = withDefaults(defineProps<Props>(), {
   button: true,
 });
+
+const emit = defineEmits(["update:modelValue"]);
 
 const show = ref(false);
 
@@ -91,119 +97,7 @@ const panelData = computed<SettingData>(() => {
   return { ...store.state.panelData };
 });
 
-const setting = ref<Setting[]>([
-  {
-    title: "Page style setting",
-    desc: {
-      sidebarLogo: {
-        type: "el-switch",
-        label: "Sidebar Logo",
-      },
-    },
-  },
-  {
-    title: "Layout",
-    desc: {
-      contentWidth: {
-        type: "el-radio-group",
-        label: "Content Width",
-        subComponent: "el-radio",
-        options: [
-          {
-            text: "Full Width",
-            value: "fullWidth",
-          },
-          {
-            text: "Boxed",
-            value: "boxed",
-          },
-        ],
-        attrs: {
-          style: {
-            width: "100%",
-          },
-        },
-      },
-      appBarType: {
-        type: "el-radio-group",
-        label: "AppBar Type",
-        subComponent: "el-radio",
-        options: [
-          {
-            text: "Fixed",
-            value: "fixed",
-          },
-          {
-            text: "Static",
-            value: "static",
-          },
-        ],
-        attrs: {
-          style: {
-            width: "100%",
-          },
-        },
-      },
-      footerType: {
-        type: "el-radio-group",
-        label: "Footer Type",
-        subComponent: "el-radio",
-        options: [
-          {
-            text: "Fixed",
-            value: "fixed",
-          },
-          {
-            text: "Static",
-            value: "static",
-          },
-          {
-            text: "Hidden",
-            value: "hidden",
-          },
-        ],
-        attrs: {
-          style: {
-            width: "100%",
-          },
-        },
-      },
-    },
-  },
-  {
-    title: "MENU",
-    desc: {
-      menuLayout: {
-        type: "el-radio-group",
-        label: "Menu Layout",
-        subComponent: "el-radio",
-        options: [
-          {
-            text: "Vertical",
-            value: "vertical",
-          },
-          {
-            text: "Horizontal",
-            value: "horizontal",
-          },
-        ],
-        attrs: {
-          style: {
-            width: "100%",
-          },
-        },
-      },
-      menuCollapsed: {
-        type: "el-switch",
-        label: "Menu Collapsed",
-      },
-      menuHidden: {
-        type: "el-switch",
-        label: "Menu Hidden",
-      },
-    },
-  },
-]);
+const setting = ref<Setting[]>(defaultSetting);
 
 init();
 
@@ -216,15 +110,25 @@ watchEffect(() => {
   }
 });
 
+watch(
+  () => props.modelValue,
+  (data) => {
+    data && store.setPanelDataAction(data);
+  },
+  {
+    deep: true,
+  }
+);
+
 // window.addEventListener('click', (e: Event) => {
 //   console.log((e.target as HTMLElement).closest('.rightPanel-container'))
 // })
 
 function init() {
-  const { initPanelData = {}, initPanelSetting = [] } = props;
+  const { modelValue = {}, customSetting = [] } = props;
 
   // 声明默认设置
-  let panelData: SettingData = {
+  let defaultPanelData: SettingData = {
     sidebarLogo: true,
     contentWidth: "fullWidth",
     appBarType: "fixed",
@@ -232,14 +136,14 @@ function init() {
     menuLayout: "vertical",
     menuCollapsed: false,
     menuHidden: false,
-    ...initPanelData,
+    ...modelValue,
   };
 
   // 获取本地缓存设置
-  const catchPanelData = storage.get<SettingData>("__panelData__", {});
+  const catchPanelData = storage.get<SettingData>(CATCH_KEY, {});
 
-  if (initPanelSetting.length) {
-    setting.value = initPanelSetting;
+  if (customSetting.length) {
+    setting.value = customSetting;
   }
   // 删除不存在选项配置中的缓存
   const initPanelKeys: string[] = flattenDeep(
@@ -254,15 +158,19 @@ function init() {
   });
   // 缓存设置覆盖默认设置
   store.setPanelDataAction({
-    ...panelData,
+    ...defaultPanelData,
     ...catchPanelData,
   });
-  storage.set("__panelData__", catchPanelData);
+  storage.set(CATCH_KEY, catchPanelData);
+  // setTimeout(() => {
+  emit("update:modelValue", panelData.value);
+  // });
 }
 
 function handleChange(value: any, field: string) {
   console.log(value, field);
   store.setPanelDataAction(panelData.value, field, value);
+  emit("update:modelValue", panelData.value);
 }
 </script>
 
@@ -345,7 +253,6 @@ function handleChange(value: any, field: string) {
     color: rgba(94, 86, 105, 0.38);
     font-weight: bold;
   }
-
   .drawer-item {
     display: flex;
     flex-wrap: wrap;

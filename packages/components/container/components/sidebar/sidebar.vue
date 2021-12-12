@@ -20,10 +20,9 @@
 </template>
 <script lang="ts" setup>
 import { computed, inject } from "vue";
-import { SIDEBAR_STYLE_KEY } from "@/index";
-import { SidebarItemProps } from "./index";
+import { SidebarItemProps, SIDEBAR_STYLE_KEY } from "./sidebar";
 import SidebarItem from "../sidebar/sidebar-item.vue";
-import store from "@/components/container/store";
+import store from "@/components/setting-panel/store";
 
 interface Props {
   mode?: string

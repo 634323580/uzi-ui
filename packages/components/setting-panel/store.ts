@@ -1,12 +1,13 @@
 import { reactive } from 'vue'
 import storage from 'good-storage'
-import { SettingData } from '@/components/right-panel/'
+import { CATCH_KEY, SettingData } from '@/components/setting-panel'
+
 export interface State {
   panelData: SettingData
 }
 
 const store = {
-  debug: true,
+  debug: process.env.NODE_ENV === 'development',
   state: reactive<State>({
     panelData: {}
   }),
@@ -17,9 +18,9 @@ const store = {
    */
   setPanelDataAction(newPanelData: SettingData, cacheKey?: string, cacheValue?: any) {
     if(cacheKey) {
-      let cacheData = storage.get<SettingData>('__panelData__', {})
+      let cacheData = storage.get<SettingData>(CATCH_KEY, {})
       cacheData[cacheKey] = cacheValue
-      storage.set('__panelData__', cacheData);
+      storage.set(CATCH_KEY, cacheData);
     }
     this.state.panelData = newPanelData
   }

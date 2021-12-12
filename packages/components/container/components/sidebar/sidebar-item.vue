@@ -50,7 +50,7 @@ import {
   Setting as SettingIcon,
   Close as CloseIcon,
 } from "@element-plus/icons";
-import { SidebarItemProps } from "./index";
+import { SidebarItemProps } from "./sidebar";
 
 const props = defineProps<{
   item: SidebarItemProps;

@@ -1,11 +1,11 @@
 <template>
-  <container ref="containerRef" :asideWidth="300">
-    {{ panelData }}
+  <container :asideWidth="300">
+    {{ data }}
     <p v-for="(item, index) in 100" :key="index">{{ index }}</p>
   </container>
-  <right-panel
+  <setting-panel
     :button="true"
-    :initPanelData="initPanelData"
+    v-model="data"
   />
 </template>
 
@@ -23,7 +23,7 @@ provide(SIDEBAR_STYLE_KEY, {
   subBackgroundHoverColor: "#001528",
 });
 
-const initPanelSetting = [
+const customSetting = [
   {
     title: "自定义",
     desc: {
@@ -38,18 +38,17 @@ const initPanelSetting = [
     },
   },
 ];
-const initPanelData = ref({
+const data = ref({
   fixedHeader: true,
   sidebarLogo: true,
   menuCollapsed: false,
   menuHidden: false,
   // menuLayout: "horizontal",
 });
-const containerRef = ref<any>(null);
-const panelData = computed(() => {
-  const containerReVal = containerRef.value;
-  return containerReVal ? containerReVal.panelData : {};
-});
+
+setTimeout(() => {
+  data.value.menuHidden = true
+}, 2000)
 </script>
 
 <style>

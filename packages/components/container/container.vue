@@ -52,7 +52,7 @@ export default defineComponent({
 <script setup lang="ts">
 import { computed } from "vue";
 import Sidebar from './components/sidebar/sidebar.vue'
-import store from "./store";
+import store from "@/components/setting-panel/store";
 
 interface Props {
   asideWidth?: number;
@@ -88,10 +88,6 @@ const mainLayoutStyle = computed(() => {
   return {
     marginLeft,
   };
-});
-
-defineExpose({
-  panelData,
 });
 </script>
 
