@@ -3,16 +3,16 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         v-bind="styleConfig"
+        :defaultActive="defaultActive"
         :collapse="menuCollapsed"
         :collapse-transition="false"
         :mode="mode"
       >
         <sidebar-item
-          v-for="route in asyncRoutes"
+          v-for="route in routes"
           :key="route.path"
           :item="route"
           :base-path="route.path"
-          isRoot
         />
       </el-menu>
     </el-scrollbar>
@@ -25,15 +25,16 @@ import SidebarItem from "../sidebar/sidebar-item.vue";
 import store from "@/components/setting-panel/store";
 
 interface Props {
-  mode?: string
+  mode?: string;
+  routes?: SidebarItemProps[];
+  defaultActive?: string,
 }
 
 withDefaults(defineProps<Props>(), {
-  mode: 'vertical'
-})
+  mode: "vertical",
+});
 
 interface Config {
-  defaultActive?: string;
   textColor?: string;
   activeTextColor?: string;
   backgroundColor?: string;
@@ -42,7 +43,6 @@ interface Config {
 }
 
 const defaultConfig: Config = {
-  defaultActive: "https:www.baidu.com",
   backgroundColor: "#334154",
   textColor: "#fff",
   activeTextColor: "#ffd04b",
@@ -61,62 +61,6 @@ const styleConfig = computed<Config>(() => {
 
 const menuCollapsed = computed(() => store.state.panelData.menuCollapsed);
 
-const asyncRoutes: SidebarItemProps[] = [
-  {
-    path: "/page",
-    name: "page",
-    meta: {
-      title: "page",
-    },
-  },
-  {
-    path: "/test/",
-    alwaysShow: true, // will always show the root menu
-    name: "test",
-    meta: {
-      title: "test",
-    },
-    children: [
-      {
-        path: "https:www.baidu.com",
-        name: "test1",
-        meta: {
-          title: "Page",
-        },
-      },
-      {
-        path: "/test2/",
-        name: "test2",
-        meta: {
-          title: "test2",
-        },
-        children: [
-          {
-            path: "/test2/",
-            name: "test2",
-            meta: {
-              title: "test2",
-            },
-          },
-          {
-            path: "test3",
-            name: "test3",
-            meta: {
-              title: "test3",
-            },
-          },
-        ],
-      },
-      {
-        path: "test3",
-        name: "test3",
-        meta: {
-          title: "test3",
-        },
-      },
-    ],
-  },
-];
 </script>
 
 <style scoped lang="scss">
@@ -172,8 +116,8 @@ const asyncRoutes: SidebarItemProps[] = [
 }
 
 :deep(.el-menu--horizontal) {
-  .el-menu-item{
-    & > div{
+  .el-menu-item {
+    & > div {
       position: static !important;
       padding: 0 !important;
     }

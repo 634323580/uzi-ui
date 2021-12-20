@@ -7,7 +7,7 @@
         :style="asideStyle"
         class="container__aside"
       >
-        <Sidebar />
+        <sidebar v-bind="$attrs"></sidebar>
       </div>
     </transition>
     <!-- mainLayout -->
@@ -15,10 +15,8 @@
       <!-- header -->
       <div :class="panelData.appBarType" class="container__header">
         <div :class="panelData.contentWidth">
-            <!-- v-if="!panelData.menuHidden && panelData.menuLayout === 'horizontal'"  -->
-          <Sidebar 
-            mode="horizontal"
-          />
+          <sidebar v-bind="$attrs" mode="horizontal"></sidebar>
+          <slot name="header"></slot>
         </div>
       </div>
       <div class="container__content">
@@ -51,7 +49,7 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 import { computed } from "vue";
-import Sidebar from './components/sidebar/sidebar.vue'
+import Sidebar from "./components/sidebar/sidebar.vue";
 import store from "@/components/setting-panel/store";
 
 interface Props {
@@ -70,7 +68,7 @@ const asideStyle = computed(() => {
   const { menuCollapsed } = panelData.value;
   const { asideWidth, asideCollapsedWidth } = props;
   return {
-    width: (menuCollapsed ? asideCollapsedWidth : asideWidth) + 'px',
+    width: (menuCollapsed ? asideCollapsedWidth : asideWidth) + "px",
   };
 });
 // 主要内容外框样式
@@ -78,11 +76,11 @@ const mainLayoutStyle = computed(() => {
   const { menuCollapsed, menuHidden, menuLayout } = panelData.value;
   const { asideWidth, asideCollapsedWidth } = props;
   let marginLeft = "";
-  if (!menuHidden && menuLayout !== 'horizontal') {
+  if (!menuHidden && menuLayout !== "horizontal") {
     if (menuCollapsed) {
-      marginLeft = asideCollapsedWidth + 'px';
+      marginLeft = asideCollapsedWidth + "px";
     } else {
-      marginLeft = asideWidth + 'px';
+      marginLeft = asideWidth + "px";
     }
   }
   return {
@@ -149,7 +147,7 @@ const mainLayoutStyle = computed(() => {
 }
 
 .slide-bottom-enter-active,
-.slide-left-enter-active{
+.slide-left-enter-active {
   transition: 0.3s ease;
 }
 

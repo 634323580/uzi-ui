@@ -9,24 +9,25 @@
         !item.alwaysShow
       "
     >
-      <el-menu-item :index="resolvePath(onlyOneChild.path, isRoot)">
-        <el-icon><SettingIcon /></el-icon>
-        <template #title>
-          <!-- {{ onlyOneChild.meta.title }} -->
-          <span>
-          {{resolvePath(onlyOneChild.path, isRoot)}}
-
-          </span>
-        </template>
-      </el-menu-item>
+      <Link :to="resolvePath(onlyOneChild.path)">
+        <el-menu-item :index="resolvePath(onlyOneChild.path)">
+          <Icon v-if="onlyOneChild.meta && onlyOneChild.meta.icon" :iconClass="onlyOneChild.meta.icon" />
+          <template #title>
+            <span>
+              {{ onlyOneChild.meta.title }}
+              <!-- {{resolvePath(onlyOneChild.path)}} -->
+            </span>
+          </template>
+        </el-menu-item>
+      </Link>
     </template>
     <!-- 有子节点 -->
     <template v-else>
-      <el-sub-menu :index="resolvePath(item.path, isRoot)" popper-append-to-body>
+      <el-sub-menu :index="resolvePath(item.path)" popper-append-to-body>
         <template #title v-if="item.meta">
-          <el-icon><SettingIcon /></el-icon>
-          <!-- <span class="title">{{ item.meta.title }}</span> -->
-          <span class="title">{{resolvePath(item.path, isRoot)}}</span>
+          <Icon v-if="item.meta.icon" :iconClass="item.meta.icon" />
+          <span class="title">{{ item.meta.title }}</span>
+          <!-- <span class="title">{{resolvePath(item.path)}}</span> -->
         </template>
         <sidebar-item
           v-for="child in item.children"
@@ -46,16 +47,15 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 import { ref } from "vue";
-import {
-  Setting as SettingIcon,
-  Close as CloseIcon,
-} from "@element-plus/icons";
+import path from 'path'
+import Link from './link.vue'
+import Icon from './icon.vue'
+import { isExternal } from '@/utils/validate'
 import { SidebarItemProps } from "./sidebar";
 
 const props = defineProps<{
   item: SidebarItemProps;
   basePath: string;
-  isRoot?: boolean
 }>();
 
 let onlyOneChild = ref<SidebarItemProps>();
@@ -89,21 +89,14 @@ function hasOneShowingChild(
   return false;
 }
 
-function isExternal(path: string) {
-  return /^(https?:|mailto:|tel:)/.test(path)
-}
-
-function resolvePath(routePath: string, isRoot?: boolean) {
+function resolvePath(routePath: string) {
   if (isExternal(routePath)) {
     return routePath;
   }
   if (isExternal(props.basePath)) {
     return props.basePath;
   }
-  if(isRoot) {
-    return props.basePath.replace(/\/+$/, '');
-  }
-  return `${props.basePath}/${routePath}`.replace(/\/+/g, "/").replace(/\/$/, '');
+  return path.resolve(props.basePath, routePath)
 }
 
 </script>
