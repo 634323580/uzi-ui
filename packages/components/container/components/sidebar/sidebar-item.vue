@@ -47,7 +47,7 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 import { ref } from "vue";
-import path from 'path'
+import { normalizePath } from '@/utils'
 import Link from './link.vue'
 import Icon from './icon.vue'
 import { isExternal } from '@/utils/validate'
@@ -96,7 +96,7 @@ function resolvePath(routePath: string) {
   if (isExternal(props.basePath)) {
     return props.basePath;
   }
-  return path.resolve(props.basePath, routePath)
+  return normalizePath(props.basePath, routePath)
 }
 
 </script>
