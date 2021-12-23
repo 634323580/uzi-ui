@@ -15,7 +15,11 @@
       <!-- header -->
       <div :class="panelData.appBarType" class="container__header">
         <div :class="panelData.contentWidth">
-          <sidebar v-bind="$attrs" mode="horizontal"></sidebar>
+          <sidebar
+            v-bind="$attrs"
+            v-if="!panelData.menuHidden && panelData.menuLayout !== 'vertical'"
+            mode="horizontal"
+          ></sidebar>
           <slot name="header"></slot>
         </div>
       </div>
@@ -45,6 +49,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "container",
+  inheritAttrs: false
 });
 </script>
 <script setup lang="ts">
@@ -77,11 +82,7 @@ const mainLayoutStyle = computed(() => {
   const { asideWidth, asideCollapsedWidth } = props;
   let marginLeft = "";
   if (!menuHidden && menuLayout !== "horizontal") {
-    if (menuCollapsed) {
-      marginLeft = asideCollapsedWidth + "px";
-    } else {
-      marginLeft = asideWidth + "px";
-    }
+    marginLeft = (menuCollapsed ? asideCollapsedWidth : asideWidth) + "px";
   }
   return {
     marginLeft,
@@ -102,13 +103,13 @@ const mainLayoutStyle = computed(() => {
   bottom: 0;
   z-index: 999;
   width: 200px;
-  transition: width 0.3s ease;
+  transition: width 0.2s ease;
 }
 .container__main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  transition: 0.3s ease;
+  transition: 0.2s ease;
 }
 .container__content,
 .container__header {
@@ -148,7 +149,7 @@ const mainLayoutStyle = computed(() => {
 
 .slide-bottom-enter-active,
 .slide-left-enter-active {
-  transition: 0.3s ease;
+  transition: 0.2s ease;
 }
 
 .slide-bottom-enter-from,

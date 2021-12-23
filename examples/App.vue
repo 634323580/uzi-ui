@@ -1,8 +1,9 @@
 <template>
-  <container :routes="routes" :defaultActive="defaultActive" :asideWidth="300">
-    <template #logo>logo</template>
-    <!-- <template #header></template> -->
-    {{ data }}
+  <container :routes="routes" :defaultActive="defaultActive">
+    <template #header>
+      <!-- <svg-icon :size="30" color="red" icon-class="iconicon_modiao" /> -->
+      {{ data }}
+    </template>
     <p v-for="(item, index) in 100" :key="index">{{ index }}</p>
   </container>
   <setting-panel :button="true" v-model="data" />
@@ -14,11 +15,13 @@ import { SIDEBAR_STYLE_KEY } from "../packages/index";
 
 // 设置侧边栏样式
 provide(SIDEBAR_STYLE_KEY, {
+  logo: 'https://us1-dev.propertyraptor.com/hornet/src?p=/ims/hornet/prp/system/d8abb3a0d7f64f8a8d90e65e0b8ac75e.png',
+  collapsedLogo: 'https://us1-dev.propertyraptor.com/hornet/src?p=/ims/hornet/prp/system/ab0d570ffcf346f2acb29b6c22d86d02.png',
   backgroundColor: "#334154",
   textColor: "#fff",
   activeTextColor: "#ffd04b",
   subBackgroundColor: "#222d3c",
-  subBackgroundHoverColor: "#001528",
+  subHoverBackgroundColor: "#001528",
 });
 
 const customSetting = [

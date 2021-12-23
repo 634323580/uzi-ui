@@ -168,7 +168,6 @@ function init() {
 }
 
 function handleChange(value: any, field: string) {
-  console.log(value, field);
   store.setPanelDataAction(panelData.value, field, value);
   emit("update:modelValue", panelData.value);
 }

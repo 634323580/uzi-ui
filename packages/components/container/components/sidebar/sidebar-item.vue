@@ -100,4 +100,3 @@ function resolvePath(routePath: string) {
 }
 
 </script>
-<style scoped lang="scss"></style>

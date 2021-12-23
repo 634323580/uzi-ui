@@ -1,5 +1,5 @@
 <template>
-  <el-icon>
+  <el-icon v-bind="$attrs">
     <svg class="svg-icon" aria-hidden="true">
       <use :xlink:href="iconName"></use>
     </svg>
@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
-  name: "icon-svg",
+  name: "svg-icon",
 });
 </script>
 <script lang="ts" setup>

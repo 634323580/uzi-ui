@@ -3,7 +3,9 @@ export interface SettingDesc {
   label: string;
   options?: { text: string; value: any }[];
   subComponent?: string;
-  attrs?: any;
+  attrs?: {
+    [propName: string]: any
+  };
 }
 
 export interface Setting {
@@ -26,7 +28,7 @@ export interface SettingData {
   appBarType?: "fixed" | "static";
   footerType?: "fixed" | "static" | "hidden";
   menuLayout?: "vertical" | "horizontal";
-  menuCollapsed?: any;
+  menuCollapsed?: boolean;
   menuHidden?: boolean;
   [propName: string]: any;
 }

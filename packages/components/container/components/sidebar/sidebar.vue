@@ -1,6 +1,18 @@
 <template>
   <div class="sidebar-wrapper">
     <el-scrollbar wrap-class="scrollbar-wrapper">
+      <div class="logo" v-if="showLogo">
+        <transition name="logo-fade" mode="out-in">
+          <img
+            v-if="!menuCollapsed"
+            :src="styleConfig.logo || styleConfig.collapsedLogo"
+          />
+          <img
+            v-else
+            :src="styleConfig.collapsedLogo || styleConfig.logo"
+          />
+        </transition>
+      </div>
       <el-menu
         v-bind="styleConfig"
         :defaultActive="defaultActive"
@@ -25,21 +37,23 @@ import SidebarItem from "../sidebar/sidebar-item.vue";
 import store from "@/components/setting-panel/store";
 
 interface Props {
-  mode?: string;
+  mode?: "vertical" | "horizontal";
   routes?: SidebarItemProps[];
-  defaultActive?: string,
+  defaultActive?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   mode: "vertical",
 });
 
 interface Config {
+  logo?: string;
+  collapsedLogo?: string;
   textColor?: string;
   activeTextColor?: string;
   backgroundColor?: string;
   subBackgroundColor?: string;
-  subBackgroundHoverColor?: string;
+  subHoverBackgroundColor?: string;
 }
 
 const defaultConfig: Config = {
@@ -47,7 +61,7 @@ const defaultConfig: Config = {
   textColor: "#fff",
   activeTextColor: "#ffd04b",
   subBackgroundColor: "#222d3c",
-  subBackgroundHoverColor: "#001528",
+  subHoverBackgroundColor: "#001528",
 };
 
 const config = inject<Config>(SIDEBAR_STYLE_KEY, {});
@@ -60,6 +74,13 @@ const styleConfig = computed<Config>(() => {
 });
 
 const menuCollapsed = computed(() => store.state.panelData.menuCollapsed);
+
+const sidebarLogo = computed(() => store.state.panelData.sidebarLogo);
+
+const showLogo = computed(() => {
+  const styleConfigVal = styleConfig.value
+  return props.mode === 'vertical' && sidebarLogo.value && (styleConfigVal.logo || styleConfigVal.collapsedLogo)
+})
 
 </script>
 
@@ -83,7 +104,7 @@ const menuCollapsed = computed(() => store.state.panelData.menuCollapsed);
     .el-menu-item {
       background: v-bind("styleConfig.subBackgroundColor") !important;
       &:hover {
-        background: v-bind("styleConfig.subBackgroundHoverColor") !important;
+        background: v-bind("styleConfig.subHoverBackgroundColor") !important;
       }
     }
   }
@@ -92,7 +113,7 @@ const menuCollapsed = computed(() => store.state.panelData.menuCollapsed);
       background-color: v-bind("styleConfig.subBackgroundColor") !important;
       &:hover {
         background-color: v-bind(
-          "styleConfig.subBackgroundHoverColor"
+          "styleConfig.subHoverBackgroundColor"
         ) !important;
       }
     }
@@ -130,5 +151,26 @@ const menuCollapsed = computed(() => store.state.panelData.menuCollapsed);
       margin-top: -3px;
     }
   }
+}
+.logo {
+  box-sizing: border-box;
+  background-color: #fff;
+  text-align: center;
+  height: 60px;
+  padding: 5px;
+  img {
+    vertical-align: middle;
+    max-width: 100%;
+    height: 100%;
+  }
+}
+
+.logo-fade-enter-active {
+  transition: opacity 0.3s ease;
+}
+
+.logo-fade-enter-from,
+.logo-fade-leave-to {
+  opacity: 0;
 }
 </style>

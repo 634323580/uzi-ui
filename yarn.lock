@@ -20,6 +20,11 @@
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
 
+"@element-plus/icons-vue@^0.2.2":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@element-plus/icons-vue/-/icons-vue-0.2.4.tgz#dadcf72f0cea53dc83b7b7db80e1418716d7b02c"
+  integrity sha512-RsJNyL58rwxtsjeMy34o8txkL6UlME1stWsUlRpTac6UE9Bx9gdJvnDXbIKhOJqBLX17fBjmposdrn6VTqim2w==
+
 "@element-plus/icons@^0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@element-plus/icons/-/icons-0.0.11.tgz#9b187c002774548b911850d17fa5fc2f9a515f57"
@@ -247,17 +252,17 @@
   integrity sha512-U+/Jefa0QfXUF2qVy9Dqlrb6HKJSr9/wJcM66wXmWcTOoqg7hOWzF4qruDle51pyF4x3wMn6TSH54UdjKjCKMA==
 
 "@vueuse/core@^7.0.0":
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-7.2.2.tgz#8e563766cfeeef12f4c7d07307348a2c10be9875"
-  integrity sha512-T9oksrPflNhsgG/Y/7IeCSmITPZ0VKDnTpK8y7SQl4ZIdLIL8L7fJyhJEgSMWyo497j/XK3RKFkOTh4GFTVeIQ==
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-7.4.0.tgz#dca848b9b2209d94142f2ec0baad4ee00455262c"
+  integrity sha512-CgYouxjXOE63gMn3l9cOsgzPTEAk3yoncsSmJUxXAi/to25rCPVWB/39jXTPhWZboR43EDDMWoEhHaSoMzaldg==
   dependencies:
-    "@vueuse/shared" "7.2.2"
+    "@vueuse/shared" "7.4.0"
     vue-demi "*"
 
-"@vueuse/shared@7.2.2":
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-7.2.2.tgz#12f2698d3b6470843823ae478bd8db42f05145c7"
-  integrity sha512-9vevEvvQgx4snSrDfZ5BFd7FmlIl9rwTtr8ySzPZhZQslx6lbcsXK3Q97I06Fv8S2TedR//X9fn2QbNtbFmdog==
+"@vueuse/shared@7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-7.4.0.tgz#8f0767c4f7b89112c1b34accec44a6c8625ce085"
+  integrity sha512-x5Jn6jUB8gS1mGnVCoNWFEpAoDkm2QwtacZTUgKMn0Ow8tlUBKIfGVOt4vn9qZB10froED/ARHEj79WKLXRieA==
   dependencies:
     vue-demi "*"
 
@@ -416,12 +421,12 @@ domutils@^2.5.2:
     domelementtype "^2.2.0"
     domhandler "^4.2.0"
 
-element-plus@^1.2.0-beta.5:
-  version "1.2.0-beta.5"
-  resolved "https://registry.yarnpkg.com/element-plus/-/element-plus-1.2.0-beta.5.tgz#ef4498c2d051a122cf5898189f4215129bb368bb"
-  integrity sha512-8KNGsNZ6RjVJ7kmxq/WLeTBMhVxSjfaGdW2QdcdXz4km1MgxbyBfdiNGVQG4XH/n+hbtLFldCPw0mVT4vkncuA==
+element-plus@^1.2.0-beta.6:
+  version "1.2.0-beta.6"
+  resolved "https://registry.yarnpkg.com/element-plus/-/element-plus-1.2.0-beta.6.tgz#9fa01a06950eb0380f0454cb75aefaaf5b81b043"
+  integrity sha512-8EdSIR/5/FHcSB8w1diAh+gJMHgxIvxuZoayY99k6taAR1QyEFHuPTgFccZLopJ1+iP4UEsZFz49l57qS08Utw==
   dependencies:
-    "@element-plus/icons" "^0.0.11"
+    "@element-plus/icons-vue" "^0.2.2"
     "@popperjs/core" "^2.10.2"
     "@vueuse/core" "^7.0.0"
     async-validator "^4.0.7"
