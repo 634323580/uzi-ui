@@ -34,8 +34,8 @@
             :class="panelData.footerType"
             class="container__footer"
           >
-            <div :class="panelData.contentWidth" style="height: 60px">
-              footer
+            <div :class="panelData.contentWidth">
+              <slot name="footer"></slot>
             </div>
           </div>
         </transition>

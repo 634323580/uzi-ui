@@ -1,10 +1,11 @@
 <template>
   <container :routes="routes" :defaultActive="defaultActive">
     <template #header>
-      <!-- <svg-icon :size="30" color="red" icon-class="iconicon_modiao" /> -->
+      <svg-icon :size="30" color="red" icon-class="iconicon_modiao" />
       {{ data }}
     </template>
     <p v-for="(item, index) in 100" :key="index">{{ index }}</p>
+    <template #footer>footer124</template>
   </container>
   <setting-panel :button="true" v-model="data" />
 </template>
