@@ -1,6 +1,14 @@
 language: node_js
 node_js:
   - node
-cache: yarn
+branchs:
+  only:
+    - master
+cache:
+  directories:
+    - node_modules
 install:
-  - yarn
+  - yarn install
+scripts:
+  - yarn lint
+  - yarn build
