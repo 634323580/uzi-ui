@@ -7,10 +7,7 @@
             v-if="!menuCollapsed"
             :src="styleConfig.logo || styleConfig.collapsedLogo"
           />
-          <img
-            v-else
-            :src="styleConfig.collapsedLogo || styleConfig.logo"
-          />
+          <img v-else :src="styleConfig.collapsedLogo || styleConfig.logo" />
         </transition>
       </div>
       <el-menu
@@ -31,63 +28,66 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, inject } from "vue";
-import { SidebarItemProps, SIDEBAR_STYLE_KEY } from "./sidebar";
-import SidebarItem from "../sidebar/sidebar-item.vue";
-import store from "@/components/setting-panel/store";
+import { computed, inject } from 'vue'
+import { SidebarItemProps, SIDEBAR_STYLE_KEY } from './sidebar'
+import SidebarItem from '../sidebar/sidebar-item.vue'
+import store from '@/components/setting-panel/store'
 
 interface Props {
-  mode?: "vertical" | "horizontal";
-  routes?: SidebarItemProps[];
-  defaultActive?: string;
+  mode?: 'vertical' | 'horizontal'
+  routes?: SidebarItemProps[]
+  defaultActive?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  mode: "vertical",
-});
+  mode: 'vertical'
+})
 
 interface Config {
-  logo?: string;
-  collapsedLogo?: string;
-  textColor?: string;
-  activeTextColor?: string;
-  backgroundColor?: string;
-  subBackgroundColor?: string;
-  subHoverBackgroundColor?: string;
+  logo?: string
+  collapsedLogo?: string
+  textColor?: string
+  activeTextColor?: string
+  backgroundColor?: string
+  subBackgroundColor?: string
+  subHoverBackgroundColor?: string
 }
 
 const defaultConfig: Config = {
-  backgroundColor: "#334154",
-  textColor: "#fff",
-  activeTextColor: "#ffd04b",
-  subBackgroundColor: "#222d3c",
-  subHoverBackgroundColor: "#001528",
-};
+  backgroundColor: '#334154',
+  textColor: '#fff',
+  activeTextColor: '#ffd04b',
+  subBackgroundColor: '#222d3c',
+  subHoverBackgroundColor: '#001528'
+}
 
-const config = inject<Config>(SIDEBAR_STYLE_KEY, {});
+const config = inject<Config>(SIDEBAR_STYLE_KEY, {})
 
 const styleConfig = computed<Config>(() => {
   return {
     ...defaultConfig,
-    ...config,
-  };
-});
+    ...config
+  }
+})
 
-const menuCollapsed = computed(() => store.state.panelData.menuCollapsed);
+const menuCollapsed = computed(() => store.state.panelData.menuCollapsed)
 
-const sidebarLogo = computed(() => store.state.panelData.sidebarLogo);
+const sidebarLogo = computed(() => store.state.panelData.sidebarLogo)
 
 const showLogo = computed(() => {
   const styleConfigVal = styleConfig.value
-  return props.mode === 'vertical' && sidebarLogo.value && (styleConfigVal.logo || styleConfigVal.collapsedLogo)
+  return (
+    props.mode === 'vertical' &&
+    sidebarLogo.value &&
+    (styleConfigVal.logo || styleConfigVal.collapsedLogo)
+  )
 })
-
 </script>
 
 <style scoped lang="scss">
 .sidebar-wrapper {
   height: 100%;
-  background: v-bind("styleConfig.backgroundColor");
+  background: v-bind('styleConfig.backgroundColor');
 }
 :deep(.el-menu) {
   border: none;
@@ -102,18 +102,18 @@ const showLogo = computed(() => {
 :deep(.el-sub-menu) {
   .el-menu {
     .el-menu-item {
-      background: v-bind("styleConfig.subBackgroundColor") !important;
+      background: v-bind('styleConfig.subBackgroundColor') !important;
       &:hover {
-        background: v-bind("styleConfig.subHoverBackgroundColor") !important;
+        background: v-bind('styleConfig.subHoverBackgroundColor') !important;
       }
     }
   }
   .el-sub-menu {
     .el-sub-menu__title {
-      background-color: v-bind("styleConfig.subBackgroundColor") !important;
+      background-color: v-bind('styleConfig.subBackgroundColor') !important;
       &:hover {
         background-color: v-bind(
-          "styleConfig.subHoverBackgroundColor"
+          'styleConfig.subHoverBackgroundColor'
         ) !important;
       }
     }

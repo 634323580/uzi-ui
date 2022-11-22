@@ -1,4 +1,4 @@
-import SettingPanel from "./setting-panel.vue";
+import SettingPanel from './setting-panel.vue'
 import type { App } from 'vue'
 import type { SFCWithInstall } from '@/utils/types'
 

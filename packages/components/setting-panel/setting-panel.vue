@@ -58,118 +58,115 @@
   </teleport>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "setting-panel",
-});
+  name: 'setting-panel'
+})
 </script>
 <script setup lang="ts">
-import { ref, watchEffect, watch, computed } from "vue";
-import {
-  Setting as SettingIcon,
-  Close as CloseIcon,
-} from "@element-plus/icons";
-import { flattenDeep } from "lodash-es";
-import storage from "good-storage";
-import store from "@/components/setting-panel/store";
+import { ref, watchEffect, watch, computed } from 'vue'
+import { Setting as SettingIcon, Close as CloseIcon } from '@element-plus/icons'
+import { flattenDeep } from 'lodash-es'
+import storage from 'good-storage'
+import store from '@/components/setting-panel/store'
 import {
   defaultSetting,
   CATCH_KEY,
   Setting,
-  SettingData,
-} from "./setting-panel";
+  SettingData
+} from './setting-panel'
 
 interface Props {
-  button?: boolean;
-  modelValue?: SettingData;
-  customSetting?: Setting[];
+  button?: boolean
+  modelValue?: SettingData
+  customSetting?: Setting[]
 }
 const props = withDefaults(defineProps<Props>(), {
-  button: true,
-});
+  button: true
+})
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(['update:modelValue'])
 
-const show = ref(false);
+const show = ref(false)
 
 const panelData = computed<SettingData>(() => {
-  return { ...store.state.panelData };
-});
+  return { ...store.state.panelData }
+})
 
-const setting = ref<Setting[]>(defaultSetting);
+const setting = ref<Setting[]>(defaultSetting)
 
-init();
+init()
 
 watchEffect(() => {
-  let body = document.querySelector("body");
+  let body = document.querySelector('body')
   if (show.value) {
-    body?.classList.add("showRightPanel");
+    body?.classList.add('showRightPanel')
   } else {
-    body?.classList.remove("showRightPanel");
+    body?.classList.remove('showRightPanel')
   }
-});
+})
 
 watch(
   () => props.modelValue,
   (data) => {
-    data && store.setPanelDataAction(data);
+    data && store.setPanelDataAction(data)
   },
   {
-    deep: true,
+    deep: true
   }
-);
+)
 
 // window.addEventListener('click', (e: Event) => {
 //   console.log((e.target as HTMLElement).closest('.rightPanel-container'))
 // })
 
 function init() {
-  const { modelValue = {}, customSetting = [] } = props;
+  const { modelValue = {}, customSetting = [] } = props
 
   // 声明默认设置
   let defaultPanelData: SettingData = {
     sidebarLogo: true,
-    contentWidth: "fullWidth",
-    appBarType: "fixed",
-    footerType: "static",
-    menuLayout: "vertical",
+    contentWidth: 'fullWidth',
+    appBarType: 'fixed',
+    footerType: 'static',
+    menuLayout: 'vertical',
     menuCollapsed: false,
     menuHidden: false,
-    ...modelValue,
-  };
+    ...modelValue
+  }
 
   // 获取本地缓存设置
-  const catchPanelData = storage.get<SettingData>(CATCH_KEY, {});
+  const catchPanelData = storage.get<SettingData>(CATCH_KEY, {})
 
   if (customSetting.length) {
-    setting.value = customSetting;
+    setting.value = customSetting
   }
   // 删除不存在选项配置中的缓存
   const initPanelKeys: string[] = flattenDeep(
     setting.value.map((section) => {
-      return Object.keys(section.desc);
+      return Object.keys(section.desc)
     })
-  );
+  )
   Object.keys(catchPanelData).forEach((panelDataKey) => {
     if (!initPanelKeys.includes(panelDataKey)) {
-      delete catchPanelData[panelDataKey];
+      delete catchPanelData[panelDataKey]
     }
-  });
+  })
   // 缓存设置覆盖默认设置
   store.setPanelDataAction({
     ...defaultPanelData,
-    ...catchPanelData,
-  });
-  storage.set(CATCH_KEY, catchPanelData);
+    ...catchPanelData
+  })
+  storage.set(CATCH_KEY, catchPanelData)
   // setTimeout(() => {
-  emit("update:modelValue", panelData.value);
+  emit('update:modelValue', panelData.value)
   // });
 }
 
 function handleChange(value: any, field: string) {
-  store.setPanelDataAction(panelData.value, field, value);
-  emit("update:modelValue", panelData.value);
+  store.setPanelDataAction(panelData.value, field, value)
+  emit('update:modelValue', panelData.value)
 }
 </script>
 

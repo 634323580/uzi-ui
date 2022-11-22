@@ -11,7 +11,10 @@
     >
       <Link :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)">
-          <Icon v-if="onlyOneChild.meta && onlyOneChild.meta.icon" :iconClass="onlyOneChild.meta.icon" />
+          <Icon
+            v-if="onlyOneChild.meta && onlyOneChild.meta.icon"
+            :iconClass="onlyOneChild.meta.icon"
+          />
           <template #title>
             <span>
               {{ onlyOneChild.meta.title }}
@@ -40,25 +43,25 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 export default defineComponent({
-  name: "sidebar-item",
-});
+  name: 'sidebar-item'
+})
 </script>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 import { normalizePath } from '@/utils'
 import Link from './link.vue'
 import Icon from './icon.vue'
 import { isExternal } from '@/utils/validate'
-import { SidebarItemProps } from "./sidebar";
+import { SidebarItemProps } from './sidebar'
 
 const props = defineProps<{
-  item: SidebarItemProps;
-  basePath: string;
-}>();
+  item: SidebarItemProps
+  basePath: string
+}>()
 
-let onlyOneChild = ref<SidebarItemProps>();
+let onlyOneChild = ref<SidebarItemProps>()
 
 function hasOneShowingChild(
   children: SidebarItemProps[] = [],
@@ -67,36 +70,35 @@ function hasOneShowingChild(
   // 所有显示的子节点
   const showingChildren = children.filter((item) => {
     if (item.hidden) {
-      return false;
+      return false
     } else {
       //临时设置（如果只有一个显示子项，则将使用）
-      onlyOneChild.value = item;
-      return true;
+      onlyOneChild.value = item
+      return true
     }
-  });
+  })
 
   // 当只有一个子路由器时，默认情况下显示子路由器
   if (showingChildren.length === 1) {
-    return true;
+    return true
   }
 
   // 如果没有要显示的子路由器，则显示父路由器
   if (showingChildren.length === 0) {
-    onlyOneChild.value = { ...parent, path: "", noShowingChildren: true };
-    return true;
+    onlyOneChild.value = { ...parent, path: '', noShowingChildren: true }
+    return true
   }
 
-  return false;
+  return false
 }
 
 function resolvePath(routePath: string) {
   if (isExternal(routePath)) {
-    return routePath;
+    return routePath
   }
   if (isExternal(props.basePath)) {
-    return props.basePath;
+    return props.basePath
   }
   return normalizePath(props.basePath, routePath)
 }
-
 </script>

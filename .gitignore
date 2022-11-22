@@ -8,3 +8,4 @@ dist-ssr
 .temp
 .cache
 yarn.lock
+yarn-error.log

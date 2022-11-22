@@ -16,11 +16,15 @@ const store = {
    * @param { string } cacheKey 需要缓存的key
    * @param { any } cacheValue 需要缓存的值
    */
-  setPanelDataAction(newPanelData: SettingData, cacheKey?: string, cacheValue?: any) {
-    if(cacheKey) {
-      let cacheData = storage.get<SettingData>(CATCH_KEY, {})
+  setPanelDataAction(
+    newPanelData: SettingData,
+    cacheKey?: string,
+    cacheValue?: any
+  ) {
+    if (cacheKey) {
+      const cacheData = storage.get<SettingData>(CATCH_KEY, {})
       cacheData[cacheKey] = cacheValue
-      storage.set(CATCH_KEY, cacheData);
+      storage.set(CATCH_KEY, cacheData)
     }
     this.state.panelData = newPanelData
   }

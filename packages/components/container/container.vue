@@ -45,49 +45,49 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "container",
+  name: 'container',
   inheritAttrs: false
-});
+})
 </script>
 <script setup lang="ts">
-import { computed } from "vue";
-import Sidebar from "./components/sidebar/sidebar.vue";
-import store from "@/components/setting-panel/store";
+import { computed } from 'vue'
+import Sidebar from './components/sidebar/sidebar.vue'
+import store from '@/components/setting-panel/store'
 
 interface Props {
-  asideWidth?: number;
-  asideCollapsedWidth?: number;
+  asideWidth?: number
+  asideCollapsedWidth?: number
 }
 const props = withDefaults(defineProps<Props>(), {
   asideWidth: 200,
-  asideCollapsedWidth: 60,
-});
+  asideCollapsedWidth: 60
+})
 
 // 设置面板数据
-const panelData = computed(() => store.state.panelData);
+const panelData = computed(() => store.state.panelData)
 // 侧边栏样式
 const asideStyle = computed(() => {
-  const { menuCollapsed } = panelData.value;
-  const { asideWidth, asideCollapsedWidth } = props;
+  const { menuCollapsed } = panelData.value
+  const { asideWidth, asideCollapsedWidth } = props
   return {
-    width: (menuCollapsed ? asideCollapsedWidth : asideWidth) + "px",
-  };
-});
+    width: (menuCollapsed ? asideCollapsedWidth : asideWidth) + 'px'
+  }
+})
 // 主要内容外框样式
 const mainLayoutStyle = computed(() => {
-  const { menuCollapsed, menuHidden, menuLayout } = panelData.value;
-  const { asideWidth, asideCollapsedWidth } = props;
-  let marginLeft = "";
-  if (!menuHidden && menuLayout !== "horizontal") {
-    marginLeft = (menuCollapsed ? asideCollapsedWidth : asideWidth) + "px";
+  const { menuCollapsed, menuHidden, menuLayout } = panelData.value
+  const { asideWidth, asideCollapsedWidth } = props
+  let marginLeft = ''
+  if (!menuHidden && menuLayout !== 'horizontal') {
+    marginLeft = (menuCollapsed ? asideCollapsedWidth : asideWidth) + 'px'
   }
   return {
-    marginLeft,
-  };
-});
+    marginLeft
+  }
+})
 </script>
 
 <style lang="scss" scoped>
